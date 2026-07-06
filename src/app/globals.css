@@ -2,25 +2,85 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #0f172a;
+
+  /* Brand palette (from MPEC logo) */
+  --brand-navy: #1b2a86;
+  --brand-navy-dark: #131d5e;
+  --brand-blue: #2f6fed;
+  --brand-red: #d81f2a;
+  --brand-saffron: #f7941d;
+  --brand-gold: #f5b400;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-sans, ui-sans-serif, system-ui);
+
+  --color-navy: var(--brand-navy);
+  --color-navy-dark: var(--brand-navy-dark);
+  --color-brandblue: var(--brand-blue);
+  --color-brandred: var(--brand-red);
+  --color-saffron: var(--brand-saffron);
+  --color-gold: var(--brand-gold);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
+
+.container-wrap {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+/* Utility gradient text */
+.text-gradient {
+  background: linear-gradient(90deg, var(--brand-navy), var(--brand-blue));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero-gradient {
+  background:
+    radial-gradient(1200px 500px at 80% -10%, rgba(247, 148, 29, 0.18), transparent 60%),
+    radial-gradient(900px 500px at 0% 10%, rgba(47, 111, 237, 0.22), transparent 55%),
+    linear-gradient(160deg, #131d5e 0%, #1b2a86 45%, #22349e 100%);
+}
+
+.card-hover {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px -18px rgba(27, 42, 134, 0.35);
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 26s linear infinite;
+}
+
+@keyframes floaty {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.animate-floaty { animation: floaty 6s ease-in-out infinite; }
