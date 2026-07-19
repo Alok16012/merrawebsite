@@ -30,6 +30,7 @@ export default function Footer() {
               ["/admission", "Apply for Admission"],
               ["/about", "About Us"],
               ["/contact", "Contact"],
+              ["/crm", "Staff / Student Login"],
             ].map(([href, label]) => (
               <li key={href}>
                 <Link href={href} className="hover:text-gold transition">

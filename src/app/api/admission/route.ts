@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import { createClient } from "@supabase/supabase-js";
 import { site } from "@/lib/site";
 
 export const runtime = "nodejs";
@@ -49,6 +50,37 @@ export async function POST(req: Request) {
     `Time:          ${new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}`,
   ];
   const text = lines.join("\n");
+
+  // Save the enquiry as a lead in the Admission Guru CRM (Supabase).
+  // Non-fatal: email/WhatsApp flow continues even if the insert fails.
+  let crmSaved = false;
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (supabaseUrl && serviceKey) {
+    try {
+      const supabase = createClient(supabaseUrl, serviceKey);
+      const { error } = await supabase.from("leads").insert({
+        full_name: name,
+        phone,
+        email: data.email?.trim() || null,
+        city: data.city?.trim() || null,
+        source: "website",
+        metadata: {
+          course: data.course || null,
+          qualification: data.qualification || null,
+          message: data.message || null,
+          wants_credit_card: !!data.wantsCreditCard,
+          form_source: data.source || "Website",
+        },
+      });
+      if (error) console.error("CRM lead insert failed:", error.message);
+      else crmSaved = true;
+    } catch (err) {
+      console.error("CRM lead insert failed:", err);
+    }
+  } else {
+    console.warn("Supabase not configured — lead not saved to CRM.");
+  }
 
   // WhatsApp "click to notify" link the team can use (works without paid API).
   const waMessage = encodeURIComponent(text);
@@ -109,5 +141,5 @@ export async function POST(req: Request) {
     console.log(text);
   }
 
-  return NextResponse.json({ ok: true, emailed, waNotifyLink });
+  return NextResponse.json({ ok: true, emailed, crmSaved, waNotifyLink });
 }
