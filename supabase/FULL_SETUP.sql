@@ -2974,7 +2974,7 @@ CREATE POLICY "lead_view_own_mentorship_tasks"
 
 
 -- ────────────────────────────────────────────────────────────
--- MIGRATION: 077_enrollment_number_dcw_format.sql
+-- MIGRATION: 077_enrollment_number_mpec_format.sql
 -- ────────────────────────────────────────────────────────────
 -- Change enrollment number default from ENR- prefix to MPEC- prefix
 ALTER TABLE students
