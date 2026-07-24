@@ -28,7 +28,7 @@ export default async function AdmissionPage({
       <PageHeader
         badge="Admission Open 2025-26"
         title="Apply for Admission"
-        subtitle="Fill this short form. Our counsellor will call and guide you — completely free."
+        subtitle="Fill this admission / counselling form. Our counsellor will call and guide you — completely free."
       />
 
       <div className="container-wrap grid gap-10 py-14 md:py-20 lg:grid-cols-[1fr_1.3fr]">
@@ -76,7 +76,7 @@ export default async function AdmissionPage({
 
         {/* Form */}
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-          <h2 className="text-xl font-bold text-navy">Admission Enquiry Form</h2>
+          <h2 className="text-xl font-bold text-navy">Admission / Counselling Form</h2>
           <p className="mt-1 text-sm text-slate-500">Fields marked * are required.</p>
           <div className="mt-6">
             <AdmissionForm defaultCourse={course || ""} />
