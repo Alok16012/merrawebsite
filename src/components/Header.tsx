@@ -66,7 +66,7 @@ export default function Header() {
               href="/admission"
               className="ml-2 rounded-full bg-saffron px-5 py-2.5 text-sm font-bold text-white shadow hover:bg-brandred transition"
             >
-              Apply Now
+              Admission Form
             </Link>
           </nav>
 
@@ -104,7 +104,7 @@ export default function Header() {
                 onClick={() => setOpen(false)}
                 className="mt-3 rounded-full bg-saffron px-5 py-3 text-center text-sm font-bold text-white"
               >
-                Apply Now
+                Admission Form
               </Link>
             </nav>
           </div>

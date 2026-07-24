@@ -328,7 +328,7 @@ export default function Home() {
               href="/admission"
               className="rounded-full bg-saffron px-8 py-3.5 font-bold text-white shadow-lg transition hover:bg-brandred"
             >
-              Apply Now
+              Admission Form
             </Link>
             <a
               href={`tel:${site.phones[0]}`}
