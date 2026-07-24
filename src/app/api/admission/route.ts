@@ -36,6 +36,9 @@ type Payload = {
   collegePreference?: string;
   statePreference?: string;
   expectedBudget?: string;
+  place?: string;
+  photoData?: string;
+  photoName?: string;
   // Shared
   phone?: string;
   email?: string;
@@ -105,6 +108,8 @@ export async function POST(req: Request) {
     `College Pref:   ${d(data.collegePreference)}`,
     `State Pref:     ${d(data.statePreference)}`,
     `Expected Budget:${d(data.expectedBudget)}`,
+    `Place:          ${d(data.place)}`,
+    `Photo:          ${data.photoData ? "Uploaded" : "-"}`,
     `Credit Card:    ${data.wantsCreditCard ? "YES — wants Bihar Student Credit Card help" : "No"}`,
     `Message:        ${d(data.message)}`,
     `Terms Accepted: ${data.agreeTerms ? "Yes" : "No"}`,
@@ -121,6 +126,30 @@ export async function POST(req: Request) {
   if (supabaseUrl && serviceKey) {
     try {
       const supabase = createClient(supabaseUrl, serviceKey);
+
+      // Upload the candidate photo (data URL) to storage using the service key,
+      // which bypasses RLS (website visitors are anonymous). Non-fatal.
+      let photoUrl: string | null = null;
+      const photoMatch = data.photoData?.match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/);
+      if (photoMatch) {
+        try {
+          const contentType = photoMatch[1];
+          const buffer = Buffer.from(photoMatch[2], "base64");
+          if (buffer.length <= 5 * 1024 * 1024) {
+            const ext = (contentType.split("/")[1] || "jpg").replace("jpeg", "jpg");
+            const safeName = name.replace(/[^a-zA-Z0-9]+/g, "_").slice(0, 40) || "candidate";
+            const path = `admission-leads/${Date.now()}-${safeName}.${ext}`;
+            const { error: upErr } = await supabase.storage
+              .from("student-documents")
+              .upload(path, buffer, { contentType, upsert: true });
+            if (upErr) console.error("Lead photo upload failed:", upErr.message);
+            else photoUrl = supabase.storage.from("student-documents").getPublicUrl(path).data.publicUrl;
+          }
+        } catch (err) {
+          console.error("Lead photo upload failed:", err);
+        }
+      }
+
       // Keep metadata flat (scalar values) so the CRM lead detail renders each
       // field cleanly. Drop empty values to avoid clutter.
       const rawMeta: Record<string, unknown> = {
@@ -161,6 +190,8 @@ export async function POST(req: Request) {
         college_preference: data.collegePreference,
         state_preference: data.statePreference,
         expected_budget: data.expectedBudget,
+        place: data.place,
+        photo_url: photoUrl,
         qualification: data.qualification,
         message: data.message,
         wants_credit_card: !!data.wantsCreditCard,

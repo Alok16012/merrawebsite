@@ -50,6 +50,10 @@ const emptyForm = {
   collegePreference: "",
   statePreference: "",
   expectedBudget: "",
+  place: "",
+  // Photo (candidate passport photo — stored as data URL, uploaded server-side)
+  photoData: "",
+  photoName: "",
   // Extras
   wantsCreditCard: false,
   message: "",
@@ -65,6 +69,26 @@ export default function AdmissionForm({ defaultCourse = "" }: { defaultCourse?: 
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((f) => ({ ...f, [key]: value }));
+  }
+
+  const [photoError, setPhotoError] = useState("");
+
+  function onPhoto(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    setPhotoError("");
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setPhotoError("Please upload an image file.");
+      return;
+    }
+    if (file.size > 3 * 1024 * 1024) {
+      setPhotoError("Photo must be under 3 MB.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () =>
+      setForm((f) => ({ ...f, photoData: String(reader.result), photoName: file.name }));
+    reader.readAsDataURL(file);
   }
 
   async function submit(e: React.FormEvent) {
@@ -132,6 +156,30 @@ export default function AdmissionForm({ defaultCourse = "" }: { defaultCourse?: 
         <h3 className="mb-4 border-b border-slate-200 pb-2 text-sm font-bold uppercase tracking-wide text-navy">
           Candidate Details
         </h3>
+
+        {/* Passport photo */}
+        <div className="mb-4 flex items-center gap-4">
+          <div className="flex h-24 w-20 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-dashed border-slate-300 bg-slate-50 text-[10px] text-slate-400">
+            {form.photoData ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={form.photoData} alt="Candidate" className="h-full w-full object-cover" />
+            ) : (
+              "Photo"
+            )}
+          </div>
+          <div>
+            <label className={labelCls}>Candidate&apos;s Photo</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={onPhoto}
+              className="block w-full text-xs text-slate-600 file:mr-3 file:rounded-full file:border-0 file:bg-navy file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white hover:file:bg-navy/90"
+            />
+            <p className="mt-1 text-[11px] text-slate-400">Passport-size photo, JPG/PNG, under 3 MB.</p>
+            {photoError && <p className="mt-1 text-[11px] text-red-600">{photoError}</p>}
+          </div>
+        </div>
+
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label className={labelCls}>Candidate&apos;s Name *</label>
@@ -308,9 +356,13 @@ export default function AdmissionForm({ defaultCourse = "" }: { defaultCourse?: 
             <label className={labelCls}>State Preference</label>
             <input className={field} value={form.statePreference} onChange={(e) => update("statePreference", e.target.value)} />
           </div>
-          <div className="sm:col-span-2">
+          <div>
             <label className={labelCls}>Expected Budget</label>
             <input className={field} value={form.expectedBudget} onChange={(e) => update("expectedBudget", e.target.value)} placeholder="e.g. ₹1,00,000" />
+          </div>
+          <div>
+            <label className={labelCls}>Place</label>
+            <input className={field} value={form.place} onChange={(e) => update("place", e.target.value)} placeholder="e.g. Patna" />
           </div>
         </div>
 
@@ -343,7 +395,10 @@ export default function AdmissionForm({ defaultCourse = "" }: { defaultCourse?: 
             <li>All the information provided above is true and correct to the best of my knowledge.</li>
             <li>I authorise Meera Prakash Education Center (Admission Guru) to contact me on the phone number, WhatsApp and email provided for admission-related counselling.</li>
             <li>Counselling and guidance are advisory; final admission is subject to the eligibility, rules and seat availability of the respective college / university.</li>
-            <li>Any fee paid towards counselling or processing is as per the institute&apos;s policy and is separate from the college / university fee.</li>
+            <li>
+              <strong>The registration / admission amount paid is strictly non-refundable and non-transferable</strong> under any circumstances, whether or not the admission is finalised.
+            </li>
+            <li>Any fee paid towards counselling, registration or processing is as per the institute&apos;s policy and is separate from the college / university fee.</li>
             <li>I consent to my details being stored and processed by the institute for the purpose of my admission.</li>
           </ol>
         </div>

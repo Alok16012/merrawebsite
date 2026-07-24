@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import PageHeader from "@/components/PageHeader";
 import AdmissionForm from "@/components/AdmissionForm";
 import { site } from "@/lib/site";
@@ -76,8 +77,23 @@ export default async function AdmissionPage({
 
         {/* Form */}
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-          <h2 className="text-xl font-bold text-navy">Admission / Counselling Form</h2>
-          <p className="mt-1 text-sm text-slate-500">Fields marked * are required.</p>
+          {/* Letterhead */}
+          <div className="flex items-center gap-4 border-b border-slate-200 pb-4">
+            <span className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full ring-2 ring-navy/10 bg-white">
+              <Image src="/logo.svg" alt={site.name} fill sizes="56px" className="object-contain p-1" priority />
+            </span>
+            <div className="leading-tight">
+              <h2 className="text-lg font-extrabold text-navy sm:text-xl">{site.name}</h2>
+              <p className="text-xs font-semibold text-saffron">{site.brand} • Patna</p>
+              <p className="mt-0.5 text-[11px] text-slate-500">
+                {site.address.line1}, {site.address.line2}
+              </p>
+            </div>
+          </div>
+          <h3 className="mt-4 text-center text-base font-bold uppercase tracking-wide text-navy">
+            Admission / Counselling Form
+          </h3>
+          <p className="mt-1 text-center text-xs text-slate-500">Fields marked * are required.</p>
           <div className="mt-6">
             <AdmissionForm defaultCourse={course || ""} />
           </div>

@@ -288,12 +288,23 @@ export function LeadDetailClient({ lead: initialLead, activities: initialActivit
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {Object.entries(lead.metadata).map(([key, value]) => (
-                    <div key={key}>
-                      <span className="text-[10px] uppercase text-blue-500 font-bold tracking-wider">{key.replace(/_/g, ' ')}</span>
-                      <p className="text-sm font-medium text-slate-700">{String(value)}</p>
-                    </div>
-                  ))}
+                  {Object.entries(lead.metadata).map(([key, value]) => {
+                    const str = String(value ?? '');
+                    const isPhoto = key === 'photo_url' && /^https?:\/\//.test(str);
+                    return (
+                      <div key={key}>
+                        <span className="text-[10px] uppercase text-blue-500 font-bold tracking-wider">{key.replace(/_/g, ' ')}</span>
+                        {isPhoto ? (
+                          <a href={str} target="_blank" rel="noopener noreferrer" className="mt-1 block">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={str} alt="Candidate" className="h-20 w-16 rounded border border-blue-100 object-cover" />
+                          </a>
+                        ) : (
+                          <p className="text-sm font-medium text-slate-700">{str}</p>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </CardContent>
             </Card>
