@@ -4,8 +4,8 @@ import { site } from "@/lib/site";
 
 export default function Logo({ light = false }: { light?: boolean }) {
   return (
-    <Link href="/" className="flex items-center gap-3 group">
-      <span className="relative h-11 w-11 shrink-0 rounded-full ring-2 ring-white/70 overflow-hidden bg-white">
+    <Link href="/" className="flex min-w-0 items-center gap-2 group sm:gap-3">
+      <span className="relative h-10 w-10 shrink-0 rounded-full ring-2 ring-white/70 overflow-hidden bg-white sm:h-11 sm:w-11">
         <Image
           src="/logo.svg"
           alt={site.name}
@@ -15,16 +15,16 @@ export default function Logo({ light = false }: { light?: boolean }) {
           priority
         />
       </span>
-      <span className="leading-tight">
+      <span className="min-w-0 leading-tight">
         <span
-          className={`block text-[15px] font-extrabold tracking-tight ${
+          className={`block truncate text-[13px] font-extrabold tracking-tight sm:text-[15px] ${
             light ? "text-white" : "text-navy"
           }`}
         >
           Meera Prakash Education
         </span>
         <span
-          className={`block text-[11px] font-semibold ${
+          className={`hidden text-[11px] font-semibold sm:block ${
             light ? "text-gold" : "text-saffron"
           }`}
         >

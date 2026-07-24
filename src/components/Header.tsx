@@ -70,19 +70,28 @@ export default function Header() {
             </Link>
           </nav>
 
-          <button
-            onClick={() => setOpen((v) => !v)}
-            className="lg:hidden inline-flex items-center justify-center rounded-md p-2 text-navy hover:bg-slate-100"
-            aria-label="Toggle menu"
-          >
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              {open ? (
-                <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
-              ) : (
-                <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
-              )}
-            </svg>
-          </button>
+          {/* Mobile: keep the Admission Form button visible in the navbar */}
+          <div className="flex shrink-0 items-center gap-2 pl-2 lg:hidden">
+            <Link
+              href="/admission"
+              className="whitespace-nowrap rounded-full bg-saffron px-3.5 py-2 text-xs font-bold text-white shadow hover:bg-brandred transition"
+            >
+              Admission Form
+            </Link>
+            <button
+              onClick={() => setOpen((v) => !v)}
+              className="inline-flex items-center justify-center rounded-md p-2 text-navy hover:bg-slate-100"
+              aria-label="Toggle menu"
+            >
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                {open ? (
+                  <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
+                ) : (
+                  <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
+                )}
+              </svg>
+            </button>
+          </div>
         </div>
 
         {/* Mobile menu */}
